@@ -174,6 +174,17 @@ int main()
 		glDrawArrays(GL_POINTS, 0, 36);
 		glBindVertexArray(0);
 
+		//instanciando segundo cubo
+		model = glm::translate(model, glm::vec3(1.5, 0, 0));
+
+		glUniformMatrix4fv(modelLoc, 1, FALSE, glm::value_ptr(model));
+
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		glDrawArrays(GL_POINTS, 0, 36);
+		glBindVertexArray(0);
+
 		// Troca os buffers da tela
 		glfwSwapBuffers(window);
 	}
