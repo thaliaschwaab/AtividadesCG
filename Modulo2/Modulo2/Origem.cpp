@@ -59,6 +59,9 @@ const GLchar* fragmentShaderSource = "#version 450\n"
 
 bool rotateX=false, rotateY=false, rotateZ=false;
 
+float moveX = 0.0f, moveY = 0.0f, moveZ = 0.0f;
+float scale = 1.0f;
+
 // Função MAIN
 int main()
 {
@@ -79,7 +82,7 @@ int main()
 //#endif
 
 	// Criação da janela GLFW
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Ola 3D -- Rossana!", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Modulo2", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
 	// Fazendo o registro da função de callback para a janela GLFW
@@ -117,6 +120,7 @@ int main()
 	GLint modelLoc = glGetUniformLocation(shaderID, "model");
 	//
 	model = glm::rotate(model, /*(GLfloat)glfwGetTime()*/glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
 	glUniformMatrix4fv(modelLoc, 1, FALSE, glm::value_ptr(model));
 
 	glEnable(GL_DEPTH_TEST);
@@ -153,6 +157,9 @@ int main()
 			model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
 
 		}
+
+		model = glm::translate(model, glm::vec3(moveX, moveY, moveZ));
+		model = glm::scale(model, glm::vec3(scale, scale, scale));
 
 		glUniformMatrix4fv(modelLoc, 1, FALSE, glm::value_ptr(model));
 		// Chamada de desenho - drawcall
@@ -206,7 +213,49 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		rotateZ = true;
 	}
 
+	//translação
 
+	if (key == GLFW_KEY_W && action == GLFW_PRESS)
+	{
+		moveY += 0.01f;
+	}
+
+	if (key == GLFW_KEY_S && action == GLFW_PRESS)
+	{
+		moveY -= 0.01f;
+	}
+
+	if (key == GLFW_KEY_A && action == GLFW_PRESS)
+	{
+		moveX -= 0.01f;
+	}
+
+	if (key == GLFW_KEY_D && action == GLFW_PRESS)
+	{
+		moveX += 0.01f;
+	}
+
+	if (key == GLFW_KEY_I && action == GLFW_PRESS)
+	{
+		moveZ -= 0.01f;
+	}
+
+	if (key == GLFW_KEY_J && action == GLFW_PRESS)
+	{
+		moveZ += 0.01f;
+	}
+
+	//escala
+
+	if (key == GLFW_KEY_LEFT_BRACKET && action == GLFW_PRESS)
+	{
+		scale -= 0.01f;
+	}
+
+	if (key == GLFW_KEY_RIGHT_BRACKET && action == GLFW_PRESS)
+	{
+		scale += 0.01f;
+	}
 
 }
 
