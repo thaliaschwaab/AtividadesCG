@@ -159,12 +159,12 @@ int main()
 		// Poligono Preenchido - GL_TRIANGLES
 		
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 18);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		// Chamada de desenho - drawcall
 		// CONTORNO - GL_LINE_LOOP
 		
-		glDrawArrays(GL_POINTS, 0, 18);
+		glDrawArrays(GL_POINTS, 0, 36);
 		glBindVertexArray(0);
 
 		// Troca os buffers da tela
@@ -265,40 +265,55 @@ int setupShader()
 // A função retorna o identificador do VAO
 int setupGeometry()
 {
-	// Aqui setamos as coordenadas x, y e z do triângulo e as armazenamos de forma
-	// sequencial, já visando mandar para o VBO (Vertex Buffer Objects)
-	// Cada atributo do vértice (coordenada, cores, coordenadas de textura, normal, etc)
-	// Pode ser arazenado em um VBO único ou em VBOs separados
+	// Criação do cubo
 	GLfloat vertices[] = {
+		// Face 1 - Vermelho
+		-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
 
-		//Base da pirâmide: 2 triângulos
-		//x    y    z    r    g    b
-		-0.5, -0.5, -0.5, 1.0, 1.0, 0.0,
-		-0.5, -0.5,  0.5, 0.0, 1.0, 1.0,
-		 0.5, -0.5, -0.5, 1.0, 0.0, 1.0,
+		// Face 2 - Verde
+		-0.5f, -0.5f,  0.5f, 0.0f, 1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f, 0.0f, 1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f, 0.0f, 1.0f, 0.0f,
 
-		 -0.5, -0.5, 0.5, 1.0, 1.0, 0.0,
-		  0.5, -0.5,  0.5, 0.0, 1.0, 1.0,
-		  0.5, -0.5, -0.5, 1.0, 0.0, 1.0,
+		// Face 3 - Azul
+		-0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
 
-		 //
-		 -0.5, -0.5, -0.5, 1.0, 1.0, 0.0,
-		  0.0,  0.5,  0.0, 1.0, 1.0, 0.0,
-		  0.5, -0.5, -0.5, 1.0, 1.0, 0.0,
+		// Face 4 - Amarelo
+		 0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 0.0f,
 
-		  -0.5, -0.5, -0.5, 1.0, 0.0, 1.0,
-		  0.0,  0.5,  0.0, 1.0, 0.0, 1.0,
-		  -0.5, -0.5, 0.5, 1.0, 0.0, 1.0,
+		 // Face 5 - Azul claro
+		 -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
+		  0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
+		  0.5f, -0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+		  0.5f, -0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+		 -0.5f, -0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+		 -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
 
-		   -0.5, -0.5, 0.5, 1.0, 1.0, 0.0,
-		  0.0,  0.5,  0.0, 1.0, 1.0, 0.0,
-		  0.5, -0.5, 0.5, 1.0, 1.0, 0.0,
-
-		   0.5, -0.5, 0.5, 0.0, 1.0, 1.0,
-		  0.0,  0.5,  0.0, 0.0, 1.0, 1.0,
-		  0.5, -0.5, -0.5, 0.0, 1.0, 1.0,
-
-
+		 // Face 6 - Rosa
+		 -0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 1.0f,
+		  0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 1.0f,
+		  0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 1.0f,
+		  0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 1.0f,
+		 -0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 1.0f,
+		 -0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 1.0f,
 	};
 
 	GLuint VBO, VAO;
