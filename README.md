@@ -12,6 +12,4 @@ Repositório criado para a disciplina de Computação Gráfica.
 - Transforma a pirâmide em um cubo
 - Adiciona movimentos com A, W, S, D, I, J, [ e ]
 - Adiciona mais um cubo
-![image](images/M2-1.png)
-![image](images/M2-2.png)
-![image](images/M2-3.png)
+<img src="./images/M2.gif" width="100%">
