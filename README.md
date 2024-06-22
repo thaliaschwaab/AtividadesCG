@@ -13,3 +13,8 @@ Repositório criado para a disciplina de Computação Gráfica.
 - Adiciona movimentos com A, W, S, D, I, J, [ e ]
 - Adiciona mais um cubo
 <img src="./images/M2.gif" width="100%">
+
+# Módulo 3 - Adicionando Texturas
+- Disponível na pasta [Modulo3](https://github.com/thaliaschwaab/AtividadesCG/tree/main/Modulo3)
+- Adiciona leitura de texturas
+<img src="./images/M3.gif" width="100%">
