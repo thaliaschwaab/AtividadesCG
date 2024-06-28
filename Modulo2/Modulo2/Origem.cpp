@@ -1,3 +1,4 @@
+/* Modulo 2 - Adaptado por Thalia Schwaab */
 #include <iostream>
 #include <string>
 #include <assert.h>

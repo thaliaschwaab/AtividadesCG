@@ -1,18 +1,10 @@
-/* Modulo 3 - código adaptado de https://learnopengl.com/#!Getting-started/Hello-Triangle
- *
- * Adaptado por Thalia Schwaab
- * para a disciplina de Processamento Gráfico - Jogos Digitais - Unisinos
- * Versão inicial: 7/4/2017
- * Última atualização em 15/06/2024
- *
- */
-
+/* Modulo 3 - Adaptado por Thalia Schwaab */
 #include <iostream>
 #include <string>
+#include <assert.h>
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include <assert.h>
 
 using namespace std;
 
@@ -22,44 +14,20 @@ using namespace std;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include "Shader.h"
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
-int setupShader();
-int setupGeometry();
 int loadTexture(string path);
 int loadSimpleOBJ(string filepath, int& nVerts, glm::vec3 color);
 
 const GLuint WIDTH = 1000, HEIGHT = 1000;
 
-const GLchar* vertexShaderSource = "#version 450\n"
-"layout (location = 0) in vec3 position;\n"
-"layout (location = 1) in vec3 color;\n"
-"layout (location = 2) in vec2 tex_coord;\n"
-"out vec4 vertexColor;\n"
-"out vec2 texCoord;\n"
-"uniform mat4 model;\n"
-"void main()\n"
-"{\n"
-"gl_Position = model * vec4(position, 1.0);\n"
-"vertexColor = vec4(color, 1.0);\n"
-"texCoord = vec2(tex_coord.x, 1 - tex_coord.y);\n"
-"}\0";
-
-const GLchar* fragmentShaderSource = "#version 450\n"
-"in vec4 vertexColor;\n"
-"in vec2 texCoord;\n"
-"out vec4 color;\n"
-"uniform sampler2D tex_buffer;\n"
-"void main()\n"
-"{\n"
-"color = texture(tex_buffer, texCoord);\n"
-"}\n\0";
-
-bool rotateX,
-rotateY,
-rotateZ = false;
+bool rotateX = false, rotateY = false, rotateZ = false;
+float moveX = 0.0f, moveY = 0.0f, moveZ = 0.0f;
+float scale = 0.5f;
 
 int main()
 {
@@ -71,8 +39,7 @@ int main()
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
-		cout << "Failed to initialize GLAD" << endl;
-
+		std::cout << "Failed to initialize GLAD" << std::endl;
 	}
 
 	const GLubyte* renderer = glGetString(GL_RENDERER);
@@ -87,14 +54,14 @@ int main()
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
 
-	GLuint shaderID = setupShader();
+	Shader shader = Shader("../shaders/hello.vs", "../shaders/hello.fs");
 	string fileName = "../textures/SuzanneTriTextured.mtl";
 	GLuint texID = loadTexture("../textures/Suzanne.png");
 
-	glUseProgram(shaderID);
+	glUseProgram(shader.ID);
 
 	glm::mat4 model = glm::mat4(1);
-	GLint modelLoc = glGetUniformLocation(shaderID, "model");
+	GLint modelLoc = glGetUniformLocation(shader.ID, "model");
 	model = glm::rotate(model, /*(GLfloat)glfwGetTime()*/glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	glUniformMatrix4fv(modelLoc, 1, FALSE, glm::value_ptr(model));
 
@@ -113,25 +80,24 @@ int main()
 		float angle = (GLfloat)glfwGetTime();
 
 		model = glm::mat4(1);
-		model = glm::scale(model, glm::vec3(0.4, 0.4, 0.4));
+
 		if (rotateX)
 		{
 			model = glm::rotate(model, angle, glm::vec3(1.0f, 0.0f, 0.0f));
-
 		}
 		else if (rotateY)
 		{
 			model = glm::rotate(model, angle, glm::vec3(0.0f, 1.0f, 0.0f));
-
 		}
 		else if (rotateZ)
 		{
 			model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
-
 		}
 
-		glUniformMatrix4fv(modelLoc, 1, FALSE, glm::value_ptr(model));
+		model = glm::translate(model, glm::vec3(moveX, moveY, moveZ));
+		model = glm::scale(model, glm::vec3(scale, scale, scale));
 
+		glUniformMatrix4fv(modelLoc, 1, FALSE, glm::value_ptr(model));
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texID);
 
@@ -173,44 +139,52 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		rotateY = false;
 		rotateZ = true;
 	}
+
+	//translação
+
+	if (key == GLFW_KEY_W && action == GLFW_PRESS)
+	{
+		moveY += 0.01f;
+	}
+
+	if (key == GLFW_KEY_S && action == GLFW_PRESS)
+	{
+		moveY -= 0.01f;
+	}
+
+	if (key == GLFW_KEY_A && action == GLFW_PRESS)
+	{
+		moveX -= 0.01f;
+	}
+
+	if (key == GLFW_KEY_D && action == GLFW_PRESS)
+	{
+		moveX += 0.01f;
+	}
+
+	if (key == GLFW_KEY_I && action == GLFW_PRESS)
+	{
+		moveZ -= 0.01f;
+	}
+
+	if (key == GLFW_KEY_J && action == GLFW_PRESS)
+	{
+		moveZ += 0.01f;
+	}
+
+	//escala
+
+	if (key == GLFW_KEY_LEFT_BRACKET && action == GLFW_PRESS)
+	{
+		scale -= 0.01f;
+	}
+
+	if (key == GLFW_KEY_RIGHT_BRACKET && action == GLFW_PRESS)
+	{
+		scale += 0.01f;
+	}
 }
 
-int setupShader()
-{
-	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glCompileShader(vertexShader);
-	GLint success;
-	GLchar infoLog[512];
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << endl;
-	}
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-	glCompileShader(fragmentShader);
-	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-		cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << endl;
-	}
-	GLuint shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-		cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << endl;
-	}
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
-	return shaderProgram;
-}
 
 int loadTexture(string path)
 {
@@ -230,7 +204,7 @@ int loadTexture(string path)
 
 	if (data)
 	{
-		if (nrChannels == 3) 
+		if (nrChannels == 3)
 		{
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 		}
@@ -360,3 +334,4 @@ int loadSimpleOBJ(string filepath, int& nVerts, glm::vec3 color)
 	glBindVertexArray(0);
 	return VAO;
 }
+
