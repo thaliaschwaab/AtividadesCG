@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{7FE17440-8D2F-4C19-8FD0-3E841706C02E}</ProjectGuid>
-    <RootNamespace>Modulo4</RootNamespace>
+    <RootNamespace>Modulo5</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -119,13 +119,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../dependencies/glfw-3.3.4.bin.WIN32/include;../../dependencies/GLAD/include;../../dependencies/glm;C:\Users\User\Documents\Unisinos\Computacao grafica\CGCCHibrido-main\CGCCHibrido-main\Modulo4\shaders;C:\Users\User\Documents\Unisinos\Computacao grafica\CGCCHibrido-main\CGCCHibrido-main\Common\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../dependencies/glm;../../dependencies/glfw-3.3.4.bin.WIN32/include;../../Common/include;../../dependencies/GLAD/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../../dependencies/glfw-3.3.4.bin.WIN32/lib-vc2019;C:\Users\User\Documents\Unisinos\Computacao grafica\CGCCHibrido-main\CGCCHibrido-main\Modulo4\shaders</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies);$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -149,12 +148,14 @@
     <ClCompile Include="..\..\Common\src\Shader.cpp" />
     <ClCompile Include="..\..\Common\src\stb_image.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Origem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Common\include\Shader.h" />
     <ClInclude Include="..\..\Common\include\stb_image.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\shaders\sprite.fs" />

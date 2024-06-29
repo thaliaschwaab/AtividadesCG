@@ -23,3 +23,9 @@ Repositório criado para a disciplina de Computação Gráfica.
 - Disponível na pasta [Modulo4](https://github.com/thaliaschwaab/AtividadesCG/tree/main/Modulo4)
 - Adiciona iluminação
 <img src="./images/M4.gif" width="100%">
+
+# Módulo 5 - Adicionando uma câmera em primeira pessoa
+- Disponível na pasta [Modulo5](https://github.com/thaliaschwaab/AtividadesCG/tree/main/Modulo5)
+- Adiciona movimentação de câmera através do mouse
+- Mantém movimentação pelo teclado
+<img src="./images/M5.gif" width="100%">

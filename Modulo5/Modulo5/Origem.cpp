@@ -1,5 +1,4 @@
-﻿/* Modulo 4 - Adaptado por Thalia Schwaab */
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
@@ -20,8 +19,10 @@ using namespace std;
 #include "stb_image.h"
 #include "Shader.h"
 #include "Mesh.h"
+#include "Camera.h"
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
 int loadTexture(string path);
 void loadOBJ(string path);
@@ -44,8 +45,15 @@ float ns;
 const GLuint WIDTH = 800, HEIGHT = 600;
 
 bool rotateX = false, rotateY = false, rotateZ = false;
-float moveX = 400.0f, moveY = 300.0f, moveZ = 100.0f;
-float scale = 200.0f;
+float moveX = 0.0f, moveY = 0.0f, moveZ = 0.0f;
+float scale = 0.5f;
+
+bool firstMouse = true;
+float lastX, lastY;
+float sensitivity = 0.05f;
+float pitch = 0.0, yaw = -90.0;
+
+Camera camera;
 
 int main()
 {
@@ -54,6 +62,10 @@ int main()
 	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "M4: Adicionando Iluminação - Thalia Schwaab", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 	glfwSetKeyCallback(window, key_callback);
+
+	glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetCursorPos(window, WIDTH / 2, HEIGHT / 2);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -75,18 +87,8 @@ int main()
 	glUseProgram(shader.ID);
 	glUniform1i(glGetUniformLocation(shader.ID, "tex_buffer"), 0);
 
-	glm::mat4 projection = glm::mat4(1);
-	projection = glm::ortho(0.0, 800.0, 0.0, 600.0, -1000.0, 1000.0);
-
-	GLint projLoc = glGetUniformLocation(shader.ID, "projection");
-	glUniformMatrix4fv(projLoc, 1, false, glm::value_ptr(projection));
-
-	glm::mat4 view = glm::lookAt(glm::vec3(0.0, 0.0, 3.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
-	GLint viewLoc = glGetUniformLocation(shader.ID, "view");
-	glUniformMatrix4fv(viewLoc, 1, FALSE, glm::value_ptr(view));
-
 	Mesh object;
-	object.initialize(VAO, (totalvertices.size() / 8), &shader, glm::vec3(-2.75, 0.0, 0.0));
+	object.initialize(VAO, (totalvertices.size() / 8), &shader);
 
 	shader.setVec3("ka", ka[0], ka[1], ka[2]);
 	shader.setFloat("kd", 0.7);
@@ -98,13 +100,15 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 
+	int width, height;
+	glfwGetFramebufferSize(window, &width, &height);
+	glViewport(0, 0, width, height);
+
+	camera.initialize(&shader, width, height);
+
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
-
-		int width, height;
-		glfwGetFramebufferSize(window, &width, &height);
-		glViewport(0, 0, width, height);
 
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -112,13 +116,10 @@ int main()
 		glLineWidth(10);
 		glPointSize(20);
 
-		float angle = (GLfloat)glfwGetTime() / 10 * 7;
-
 		glm::mat4 model = glm::mat4(1);
+		
+		float angle = (GLfloat)glfwGetTime();
 
-		model = glm::mat4(1);
-
-		model = glm::translate(model, glm::vec3(moveX, moveY, moveZ));
 		if (rotateX)
 		{
 			model = glm::rotate(model, angle, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -132,17 +133,15 @@ int main()
 			model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
 		}
 
+		model = glm::translate(model, glm::vec3(moveX, moveY, moveZ));
 		model = glm::scale(model, glm::vec3(scale, scale, scale));
 
 		GLint modelLoc = glGetUniformLocation(shader.ID, "model");
-		glUniformMatrix4fv(modelLoc, 1, false, glm::value_ptr(model));
+		glUniformMatrix4fv(modelLoc, 1, 0, glm::value_ptr(model));
 
-		glUniformMatrix4fv(viewLoc, 1, FALSE, glm::value_ptr(view));
+		camera.update();
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, textureID);
-
-		object.draw();
+		object.draw(textureID);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -345,6 +344,11 @@ int loadTexture(string path)
 	return texID;
 }
 
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	camera.mouseCallback(window, xpos, ypos);
+}
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -369,46 +373,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		rotateX = false;
 		rotateY = false;
 		rotateZ = true;
-	}
 
-	if (key == GLFW_KEY_W && action == GLFW_PRESS)
-	{
-		moveY += 10.01;
 	}
-
-	if (key == GLFW_KEY_S && action == GLFW_PRESS)
-	{
-		moveY -= 10.01;
-	}
-
-	if (key == GLFW_KEY_A && action == GLFW_PRESS)
-	{
-		moveX -= 10.01;
-	}
-
-	if (key == GLFW_KEY_D && action == GLFW_PRESS)
-	{
-		moveX += 10.01;
-	}
-
-	if (key == GLFW_KEY_I && action == GLFW_PRESS)
-	{
-		moveZ -= 10.01;
-	}
-
-	if (key == GLFW_KEY_J && action == GLFW_PRESS)
-	{
-		moveZ += 10.01;
-	}
-
-
-	if (key == GLFW_KEY_LEFT_BRACKET && action == GLFW_PRESS)
-	{
-		scale -= 10.01f;
-	}
-
-	if (key == GLFW_KEY_RIGHT_BRACKET && action == GLFW_PRESS)
-	{
-		scale += 10.01f;
-	}
+	camera.setCameraPos(key);
 }
