@@ -144,22 +144,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Common\src\glad.c" />
-    <ClCompile Include="..\..\Common\src\Shader.cpp" />
-    <ClCompile Include="..\..\Common\src\stb_image.cpp" />
+    <ClCompile Include="..glad.c" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Origem.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Common\include\Shader.h" />
-    <ClInclude Include="..\..\Common\include\stb_image.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Camera.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\shaders\sprite.fs" />
-    <None Include="..\shaders\sprite.vs" />
+    <None Include="..\shaders\hello.fs" />
+    <None Include="..\shaders\hello.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
