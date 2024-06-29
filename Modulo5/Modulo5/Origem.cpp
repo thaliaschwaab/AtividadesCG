@@ -59,7 +59,7 @@ int main()
 {
 	glfwInit();
 
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "M4: Adicionando Iluminação - Thalia Schwaab", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "M5: Adicionando uma câmera em primeira pessoa - Thalia Schwaab", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 	glfwSetKeyCallback(window, key_callback);
 
