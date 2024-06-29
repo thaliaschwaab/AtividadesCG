@@ -13,8 +13,8 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{9ff5e401-1233-42c6-9ae6-488c679bc37f}</UniqueIdentifier>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{d1864ccb-9378-4b29-8785-9cdfc37f0a34}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -27,6 +27,9 @@
     <ClCompile Include="Shader.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
     <ClCompile Include="stb_image.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
@@ -35,16 +38,19 @@
     <ClInclude Include="Shader.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
     <ClInclude Include="stb_image.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\shaders\hello.fs">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="..\shaders\hello.vs">
-      <Filter>Shaders</Filter>
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\shaders\hello.fs">
+      <Filter>shaders</Filter>
     </None>
   </ItemGroup>
 </Project>
