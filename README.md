@@ -29,3 +29,8 @@ Repositório criado para a disciplina de Computação Gráfica.
 - Adiciona movimentação de câmera através do mouse
 - Mantém movimentação pelo teclado
 <img src="./images/M5.gif" width="100%">
+
+# Módulo 6 - Definindo trajetórias para alguns objetos
+- Disponível na pasta [Modulo6](https://github.com/thaliaschwaab/AtividadesCG/tree/main/Modulo6)
+- Adiciona pontos de movimentação
+<img src="./images/M6.gif" width="100%">
