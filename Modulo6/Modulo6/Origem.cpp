@@ -1,4 +1,5 @@
-﻿#include <iostream>
+﻿/* Modulo 6 - Adaptado por Thalia Schwaab */
+#include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
@@ -7,6 +8,7 @@
 #include <cassert>
 #include <cmath>
 #include <cstdio>
+#include <random>
 
 using namespace std;
 
@@ -20,6 +22,7 @@ using namespace std;
 #include "Shader.h"
 #include "Mesh.h"
 #include "Camera.h"
+#include "Bezier.h"
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -28,6 +31,8 @@ int loadTexture(string path);
 void loadOBJ(string path);
 void loadMTL(string path);
 int setupGeometry();
+
+std::vector<glm::vec3> generateUnisinosPointsSet(string path);
 
 vector<GLfloat> totalvertices;
 vector<GLfloat> vertices;
@@ -45,7 +50,6 @@ float ns;
 const GLuint WIDTH = 800, HEIGHT = 600;
 
 bool rotateX = false, rotateY = false, rotateZ = false;
-float moveX = 0.0f, moveY = 0.0f, moveZ = 0.0f;
 float scale = 0.5f;
 
 bool firstMouse = true;
@@ -59,7 +63,7 @@ int main()
 {
 	glfwInit();
 
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "M5: Adicionando uma câmera em primeira pessoa - Thalia Schwaab", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "M6: Definindo trajetórias para alguns objetos - Thalia Schwaab", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 	glfwSetKeyCallback(window, key_callback);
 
@@ -106,6 +110,17 @@ int main()
 
 	camera.initialize(&shader, width, height);
 
+	std::vector<glm::vec3> basePoints = generateUnisinosPointsSet("../points.txt");
+
+	Bezier bezier;
+	bezier.setControlPoints(basePoints);
+	bezier.setShader(&shader);
+	bezier.generateCurve(30);
+
+	int nbCurvePoints = bezier.getNbCurvePoints();
+	int i = 0;
+	int speed = 0;
+
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
@@ -116,31 +131,16 @@ int main()
 		glLineWidth(10);
 		glPointSize(20);
 
-		glm::mat4 model = glm::mat4(1);
-		
-		float angle = (GLfloat)glfwGetTime();
+		glm::vec3 pointOnCurve = bezier.getPointOnCurve(i);
 
-		if (rotateX)
-		{
-			model = glm::rotate(model, angle, glm::vec3(1.0f, 0.0f, 0.0f));
+		if (speed++ == 50) {
+			i = (i + 1) % nbCurvePoints;
+			speed = 0;
 		}
-		else if (rotateY)
-		{
-			model = glm::rotate(model, angle, glm::vec3(0.0f, 1.0f, 0.0f));
-		}
-		else if (rotateZ)
-		{
-			model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
-		}
-
-		model = glm::translate(model, glm::vec3(moveX, moveY, moveZ));
-		model = glm::scale(model, glm::vec3(scale, scale, scale));
-
-		GLint modelLoc = glGetUniformLocation(shader.ID, "model");
-		glUniformMatrix4fv(modelLoc, 1, 0, glm::value_ptr(model));
 
 		camera.update();
 
+		object.update(pointOnCurve, rotateX, rotateY, rotateZ, scale);
 		object.draw(textureID);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -375,5 +375,44 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		rotateZ = true;
 
 	}
+
+	if (key == GLFW_KEY_LEFT_BRACKET && action == GLFW_PRESS)
+	{
+		scale -= 0.01f;
+	}
+
+	if (key == GLFW_KEY_RIGHT_BRACKET && action == GLFW_PRESS)
+	{
+		scale += 0.01f;
+	}
 	camera.setCameraPos(key);
 }
+
+std::vector<glm::vec3> generateUnisinosPointsSet(string path)
+{
+	std::ifstream file(path);
+
+	if (!file.is_open()) {
+		std::cout << "Failed to open the file." + path << std::endl;
+	}
+
+	std::string line;
+	vector <glm::vec3> points;
+
+	while (std::getline(file, line))
+		if (line.length() > 0) {
+
+			std::istringstream iss(line);
+			std::string prefix;
+			char comma;
+
+			glm::vec3 temp_points;
+			iss >> temp_points.x >> comma >> temp_points.y >> comma >> temp_points.z;
+
+			points.push_back(temp_points);
+		}
+
+	file.close();
+
+	return points;
+} 

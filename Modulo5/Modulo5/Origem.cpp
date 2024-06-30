@@ -1,4 +1,5 @@
-﻿#include <iostream>
+﻿/* Modulo 5 - Adaptado por Thalia Schwaab */
+#include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>

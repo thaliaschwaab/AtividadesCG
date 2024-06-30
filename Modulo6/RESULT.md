@@ -1,3 +1,3 @@
-# MÛdulo 5 - Adicionando uma c‚mera em primeira pessoa
-<img src="./M5.gif" width="100%">
+# M√≥dulo 6 - Definindo trajet√≥rias para alguns objetos
+<img src="./M6.gif" width="100%">
 
